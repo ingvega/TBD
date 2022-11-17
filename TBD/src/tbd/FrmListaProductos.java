@@ -5,6 +5,16 @@
  */
 package tbd;
 
+import datos.DAOProducto;
+import java.sql.ResultSet;
+import java.sql.ResultSetMetaData;
+import java.util.ArrayList;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.swing.JOptionPane;
+import javax.swing.table.DefaultTableModel;
+import modelos.Producto;
+
 /**
  *
  * @author paveg
@@ -16,6 +26,30 @@ public class FrmListaProductos extends javax.swing.JFrame {
      */
     public FrmListaProductos() {
         initComponents();
+        
+        try {
+            
+            DefaultTableModel modelo=(DefaultTableModel) tblLista.getModel();
+            ArrayList<Producto> listaProductos = new DAOProducto().consultarTodos();
+            
+            for (Producto p:listaProductos) {
+                Object[] fila = new Object []{
+                    p.getId(),
+                    p.getNombre(),
+                    p.getCategoria(),
+                    p.getProveedor(),
+                    p.getExistencia(),
+                    p.getPrecio(),
+                    p.getDescontinuado()==0?"Si":"No"
+                };
+                
+                modelo.addRow(fila);
+            }
+                
+        } catch (Exception ex) {
+            JOptionPane.showMessageDialog(this, ex.getMessage());
+        }
+        
     }
 
     /**
@@ -28,14 +62,15 @@ public class FrmListaProductos extends javax.swing.JFrame {
     private void initComponents() {
 
         jScrollPane1 = new javax.swing.JScrollPane();
-        jTable1 = new javax.swing.JTable();
-        jButton1 = new javax.swing.JButton();
-        jButton2 = new javax.swing.JButton();
-        jButton3 = new javax.swing.JButton();
+        tblLista = new javax.swing.JTable();
+        jToolBar1 = new javax.swing.JToolBar();
+        btnAgregar = new javax.swing.JButton();
+        btnEditar = new javax.swing.JButton();
+        btnEliminar = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
-        jTable1.setModel(new javax.swing.table.DefaultTableModel(
+        tblLista.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
 
             },
@@ -51,39 +86,22 @@ public class FrmListaProductos extends javax.swing.JFrame {
                 return canEdit [columnIndex];
             }
         });
-        jScrollPane1.setViewportView(jTable1);
+        jScrollPane1.setViewportView(tblLista);
 
-        jButton1.setText("Agregar");
+        getContentPane().add(jScrollPane1, java.awt.BorderLayout.CENTER);
 
-        jButton2.setText("Eliminar");
+        jToolBar1.setRollover(true);
 
-        jButton3.setText("Editar");
+        btnAgregar.setText("Agregar");
+        jToolBar1.add(btnAgregar);
 
-        javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
-        getContentPane().setLayout(layout);
-        layout.setHorizontalGroup(
-            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
-            .addGroup(layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(jButton1)
-                .addGap(54, 54, 54)
-                .addComponent(jButton3)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 76, Short.MAX_VALUE)
-                .addComponent(jButton2)
-                .addGap(35, 35, 35))
-        );
-        layout.setVerticalGroup(
-            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                .addGap(0, 13, Short.MAX_VALUE)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jButton1)
-                    .addComponent(jButton3)
-                    .addComponent(jButton2))
-                .addGap(18, 18, 18)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 276, javax.swing.GroupLayout.PREFERRED_SIZE))
-        );
+        btnEditar.setText("Editar");
+        jToolBar1.add(btnEditar);
+
+        btnEliminar.setText("Eliminar");
+        jToolBar1.add(btnEliminar);
+
+        getContentPane().add(jToolBar1, java.awt.BorderLayout.PAGE_START);
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
@@ -124,10 +142,11 @@ public class FrmListaProductos extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton jButton1;
-    private javax.swing.JButton jButton2;
-    private javax.swing.JButton jButton3;
+    private javax.swing.JButton btnAgregar;
+    private javax.swing.JButton btnEditar;
+    private javax.swing.JButton btnEliminar;
     private javax.swing.JScrollPane jScrollPane1;
-    private javax.swing.JTable jTable1;
+    private javax.swing.JToolBar jToolBar1;
+    private javax.swing.JTable tblLista;
     // End of variables declaration//GEN-END:variables
 }
