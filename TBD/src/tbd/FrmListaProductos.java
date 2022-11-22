@@ -15,6 +15,7 @@ import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
 import modelos.Producto;
 
+
 /**
  *
  * @author paveg
@@ -26,12 +27,15 @@ public class FrmListaProductos extends javax.swing.JFrame {
      */
     public FrmListaProductos() {
         initComponents();
-        
+        actualizarTabla();
+    }
+    
+    private void actualizarTabla(){
         try {
             
             DefaultTableModel modelo=(DefaultTableModel) tblLista.getModel();
             ArrayList<Producto> listaProductos = new DAOProducto().consultarTodos();
-            
+            modelo.setRowCount(0);
             for (Producto p:listaProductos) {
                 Object[] fila = new Object []{
                     p.getId(),
@@ -49,7 +53,6 @@ public class FrmListaProductos extends javax.swing.JFrame {
         } catch (Exception ex) {
             JOptionPane.showMessageDialog(this, ex.getMessage());
         }
-        
     }
 
     /**
@@ -99,12 +102,42 @@ public class FrmListaProductos extends javax.swing.JFrame {
         jToolBar1.add(btnEditar);
 
         btnEliminar.setText("Eliminar");
+        btnEliminar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnEliminarActionPerformed(evt);
+            }
+        });
         jToolBar1.add(btnEliminar);
 
         getContentPane().add(jToolBar1, java.awt.BorderLayout.PAGE_START);
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
+
+    private void btnEliminarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEliminarActionPerformed
+        int fila=tblLista.getSelectedRow();
+        if(fila>=0){
+            int idProducto = Integer.parseInt(tblLista.getValueAt(fila, 0).toString());
+            String producto=tblLista.getValueAt(fila, 1).toString();
+            if(JOptionPane.showConfirmDialog(this, "¿Está seguro que desea eliminar el producto "
+                    + producto + "?")==JOptionPane.OK_OPTION){
+                try {
+                    //Respondió que sí
+                    if(new DAOProducto().eliminar(idProducto)){
+                        JOptionPane.showMessageDialog(this, "Se ha borrado correctamente el producto",
+                                "Catálogo de productos",JOptionPane.INFORMATION_MESSAGE);
+                        actualizarTabla();
+                    }
+                } catch (Exception ex) {
+                    JOptionPane.showMessageDialog(this, ex.getMessage(), 
+                    "Catálogo de productos",JOptionPane.ERROR_MESSAGE);
+                }
+            }
+        }else{
+            JOptionPane.showMessageDialog(this, "Se debe seleccionar el producto a eliminar", 
+                    "Catálogo de productos",JOptionPane.WARNING_MESSAGE);
+        }
+    }//GEN-LAST:event_btnEliminarActionPerformed
 
     /**
      * @param args the command line arguments

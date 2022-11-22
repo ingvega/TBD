@@ -16,6 +16,8 @@ public class Producto {
     private String cantidadXUnidad;
     private int idProveedor;
     private int idCategoria;
+    //Atributos extra que se usarán para mostrar los nombre
+    //del proveedor y categoría en la lista
     private String proveedor;
     private String categoria;
     private double precio;

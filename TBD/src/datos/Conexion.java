@@ -5,6 +5,7 @@
  */
 package datos;
 
+import com.mysql.cj.exceptions.MysqlErrorNumbers;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
@@ -20,11 +21,13 @@ public class Conexion {
     public static boolean conectar() {
         try {
             conexion
-                    = DriverManager.getConnection("jdbc:mysql://localhost:3306/northwind?"
+              = DriverManager.getConnection("jdbc:mysql://localhost:3306"
+                            + "/northwind?"
                             + "user=root&password=root");
             
             return true;
         } catch (SQLException ex) {
+            System.out.println(ex.getMessage());
             return false;
         }
     }
