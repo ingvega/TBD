@@ -45,8 +45,8 @@ public class DAOProducto {
                     return true;
                 }else{
                     return false;
-                }
-                */
+                }*/
+                
                 
                 //Versión parametrizada de la sentencia sql que evita el fallo
                 //de inyección SQL

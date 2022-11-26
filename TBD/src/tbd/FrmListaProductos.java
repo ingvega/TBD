@@ -6,6 +6,7 @@
 package tbd;
 
 import datos.DAOProducto;
+import datos.DAOProveedor;
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.util.ArrayList;
@@ -30,7 +31,7 @@ public class FrmListaProductos extends javax.swing.JFrame {
         actualizarTabla();
     }
     
-    private void actualizarTabla(){
+    public void actualizarTabla(){
         try {
             
             DefaultTableModel modelo=(DefaultTableModel) tblLista.getModel();
@@ -96,6 +97,11 @@ public class FrmListaProductos extends javax.swing.JFrame {
         jToolBar1.setRollover(true);
 
         btnAgregar.setText("Agregar");
+        btnAgregar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnAgregarActionPerformed(evt);
+            }
+        });
         jToolBar1.add(btnAgregar);
 
         btnEditar.setText("Editar");
@@ -138,6 +144,12 @@ public class FrmListaProductos extends javax.swing.JFrame {
                     "Catálogo de productos",JOptionPane.WARNING_MESSAGE);
         }
     }//GEN-LAST:event_btnEliminarActionPerformed
+
+    private void btnAgregarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAgregarActionPerformed
+        FrmProducto frm=new FrmProducto(this);
+        frm.setVisible(true);
+        this.setVisible(false);
+    }//GEN-LAST:event_btnAgregarActionPerformed
 
     /**
      * @param args the command line arguments

@@ -5,7 +5,16 @@
  */
 package tbd;
 
+import datos.DAOCategoria;
+import datos.DAOProveedor;
+import java.util.ArrayList;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.ComboBoxModel;
+import javax.swing.DefaultComboBoxModel;
+import modelos.Categoria;
+import modelos.Producto;
+import modelos.Proveedor;
 
 /**
  *
@@ -13,12 +22,38 @@ import javax.swing.ComboBoxModel;
  */
 public class FrmProducto extends javax.swing.JFrame {
 
+    private FrmListaProductos frmLista;
+    private int idProducto;
     /**
      * Creates new form FrmProducto
      */
-    public FrmProducto() {
+    public FrmProducto(FrmListaProductos frmLista) {
         initComponents();
-        
+        this.frmLista=frmLista;
+        try {
+            ArrayList<Categoria> categorias=new DAOCategoria().consultarTodos();
+            ArrayList<Proveedor> proveedores=new DAOProveedor().consultarTodos();
+            
+            DefaultComboBoxModel modeloCat=(DefaultComboBoxModel) cboCategoria.getModel();
+            for (Categoria categoria : categorias) {
+                   modeloCat.addElement(categoria);
+            }
+            
+            DefaultComboBoxModel modeloProv=(DefaultComboBoxModel) cboProveedor.getModel();
+            for (Proveedor proveedor: proveedores) {
+                    modeloProv.addElement(proveedor);
+            }
+            
+        } catch (Exception ex) {
+            Logger.getLogger(FrmProducto.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+    
+    public FrmProducto(FrmListaProductos frmLista, int idProducto) {
+//        initComponents();
+//        this.frmLista=frmLista;
+        this(frmLista);
+        this.idProducto=idProducto;
     }
 
     /**
@@ -60,8 +95,6 @@ public class FrmProducto extends javax.swing.JFrame {
 
         jLabel3.setText("Precio");
 
-        cboProveedor.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
-
         jLabel4.setText("Categoría");
 
         jLabel5.setText("Proveedor");
@@ -79,6 +112,11 @@ public class FrmProducto extends javax.swing.JFrame {
         jLabel9.setText("Descontinuado");
 
         btnAceptar.setText("Aceptar");
+        btnAceptar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnAceptarActionPerformed(evt);
+            }
+        });
 
         btnCancelar.setText("Cancelar");
 
@@ -191,40 +229,13 @@ public class FrmProducto extends javax.swing.JFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    /**
-     * @param args the command line arguments
-     */
-    public static void main(String args[]) {
-        /* Set the Nimbus look and feel */
-        //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
-        /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
-         * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html 
-         */
-        try {
-            for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
-                if ("Nimbus".equals(info.getName())) {
-                    javax.swing.UIManager.setLookAndFeel(info.getClassName());
-                    break;
-                }
-            }
-        } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(FrmProducto.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(FrmProducto.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(FrmProducto.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (javax.swing.UnsupportedLookAndFeelException ex) {
-            java.util.logging.Logger.getLogger(FrmProducto.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        }
-        //</editor-fold>
+    private void btnAceptarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAceptarActionPerformed
+        //Verificar que se guarde y despues a actualizar el formulario
+        frmLista.setVisible(true);
+        //Solo si guardó se actualiza
+        frmLista.actualizarTabla();
+    }//GEN-LAST:event_btnAceptarActionPerformed
 
-        /* Create and display the form */
-        java.awt.EventQueue.invokeLater(new Runnable() {
-            public void run() {
-                new FrmProducto().setVisible(true);
-            }
-        });
-    }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnAceptar;

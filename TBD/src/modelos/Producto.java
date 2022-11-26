@@ -145,7 +145,5 @@ public class Producto {
         this.existencia = existencia;
         this.descontinuado = descontinuado;
     }
-    
-    
-    
+
 }
