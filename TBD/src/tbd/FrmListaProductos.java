@@ -105,6 +105,11 @@ public class FrmListaProductos extends javax.swing.JFrame {
         jToolBar1.add(btnAgregar);
 
         btnEditar.setText("Editar");
+        btnEditar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnEditarActionPerformed(evt);
+            }
+        });
         jToolBar1.add(btnEditar);
 
         btnEliminar.setText("Eliminar");
@@ -150,6 +155,10 @@ public class FrmListaProductos extends javax.swing.JFrame {
         frm.setVisible(true);
         this.setVisible(false);
     }//GEN-LAST:event_btnAgregarActionPerformed
+
+    private void btnEditarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEditarActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_btnEditarActionPerformed
 
     /**
      * @param args the command line arguments

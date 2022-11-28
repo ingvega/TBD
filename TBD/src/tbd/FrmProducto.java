@@ -15,6 +15,8 @@ import javax.swing.DefaultComboBoxModel;
 import modelos.Categoria;
 import modelos.Producto;
 import modelos.Proveedor;
+import datos.DAOProducto;
+import javax.swing.JOptionPane;
 
 /**
  *
@@ -34,12 +36,14 @@ public class FrmProducto extends javax.swing.JFrame {
             ArrayList<Categoria> categorias=new DAOCategoria().consultarTodos();
             ArrayList<Proveedor> proveedores=new DAOProveedor().consultarTodos();
             
-            DefaultComboBoxModel modeloCat=(DefaultComboBoxModel) cboCategoria.getModel();
+            DefaultComboBoxModel modeloCat=
+                    (DefaultComboBoxModel) cboCategoria.getModel();
             for (Categoria categoria : categorias) {
                    modeloCat.addElement(categoria);
             }
             
-            DefaultComboBoxModel modeloProv=(DefaultComboBoxModel) cboProveedor.getModel();
+            DefaultComboBoxModel modeloProv=
+                    (DefaultComboBoxModel) cboProveedor.getModel();
             for (Proveedor proveedor: proveedores) {
                     modeloProv.addElement(proveedor);
             }
@@ -65,6 +69,7 @@ public class FrmProducto extends javax.swing.JFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
+        grupoDescontinuado = new javax.swing.ButtonGroup();
         cboCategoria = new javax.swing.JComboBox<>();
         jLabel1 = new javax.swing.JLabel();
         txtNombre = new javax.swing.JTextField();
@@ -105,8 +110,11 @@ public class FrmProducto extends javax.swing.JFrame {
 
         jLabel8.setText("Nivel de reorden");
 
+        grupoDescontinuado.add(rbtSi);
         rbtSi.setText("Si");
 
+        grupoDescontinuado.add(rbtNo);
+        rbtNo.setSelected(true);
         rbtNo.setText("No");
 
         jLabel9.setText("Descontinuado");
@@ -230,6 +238,39 @@ public class FrmProducto extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnAceptarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAceptarActionPerformed
+        //Validar los datos
+        
+        //Verificar si voy a agregar
+        if(idProducto==0){
+            try {
+                //Llenar un producto con todos los datos de la interfaz gráfica
+                Proveedor objProveedor=(Proveedor) cboProveedor.getSelectedItem();
+                Categoria objCategoria=(Categoria) cboCategoria.getSelectedItem();
+                
+                Producto objProducto=new Producto(0,
+                        txtNombre.getText().trim(),
+                        objProveedor.getIdProveedor(),
+                        objCategoria.getIdCategoria(),
+                        txtCantidadXUnidad.getText().trim(),
+                        Double.parseDouble(txtPrecio.getText()),
+                        Integer.parseInt(txtExistencia.getText()),
+                        Integer.parseInt(txtNivelReorden.getText()),
+                        Integer.parseInt(txtUnidadesOrden.getText()),
+                        (rbtSi.isSelected())?1:0
+                );
+                int idGenerado=new DAOProducto().agregar(objProducto);
+                if(idGenerado>0){
+                    JOptionPane.showMessageDialog(this, "El producto se ha añadido existosamente");
+                    frmLista.actualizarTabla();
+                    frmLista.setVisible(true);
+                    this.dispose();
+                }else{
+                    JOptionPane.showMessageDialog(this, "Error al tratar de almacenar el producto");
+                }
+            } catch (Exception ex) {
+                JOptionPane.showMessageDialog(this, ex.getMessage());
+            }
+        }
         //Verificar que se guarde y despues a actualizar el formulario
         frmLista.setVisible(true);
         //Solo si guardó se actualiza
@@ -242,6 +283,7 @@ public class FrmProducto extends javax.swing.JFrame {
     private javax.swing.JButton btnCancelar;
     private javax.swing.JComboBox<String> cboCategoria;
     private javax.swing.JComboBox<String> cboProveedor;
+    private javax.swing.ButtonGroup grupoDescontinuado;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;

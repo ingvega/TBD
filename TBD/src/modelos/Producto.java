@@ -122,7 +122,9 @@ public class Producto {
         this.descontinuado = descontinuado;
     }
 
-    public Producto(int id, String nombre, int idProveedor, int idCategoria, String cantidadXUnidad, double precio, int existencia, int nivelReorden, int unidadesEnOrden, int descontinuado) {
+    public Producto(int id, String nombre, int idProveedor, int idCategoria, 
+            String cantidadXUnidad, double precio, int existencia, int nivelReorden, 
+            int unidadesEnOrden, int descontinuado) {
         this.id = id;
         this.nombre = nombre;
         this.idProveedor = idProveedor;

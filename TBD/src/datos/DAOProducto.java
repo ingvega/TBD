@@ -22,43 +22,30 @@ import modelos.Producto;
 public class DAOProducto {
 
     //Operaciones
-    public int agregar(Producto objProducto) {
-        return 0;
-    }
-
-    public boolean editar(Producto objProducto) {
-        return true;
-    }
-
-    public boolean eliminar(int id) throws Exception{
-        try {
+    public int agregar(Producto objProducto) throws Exception {
+         try {
             if (Conexion.conectar()) {
+                String sql = "INSERT INTO products" +
+                            " VALUES(default,?,?,?,?,?,?,?,?,?)";
+                PreparedStatement sentencia = Conexion.conexion.prepareStatement(sql,
+                        PreparedStatement.RETURN_GENERATED_KEYS);
+                sentencia.setString(1, objProducto.getNombre());
+                sentencia.setInt(2, objProducto.getIdProveedor());
+                sentencia.setInt(3, objProducto.getIdCategoria());
+                sentencia.setString(4, objProducto.getCantidadXUnidad());
+                sentencia.setDouble(5, objProducto.getPrecio());
+                sentencia.setInt(6, objProducto.getExistencia());
+                sentencia.setInt(7, objProducto.getNivelReorden());
+                sentencia.setInt(8, objProducto.getUnidadesEnOrden());
+                sentencia.setInt(9, objProducto.getDescontinuado());
                 
-                //Sentencia concatenada puede causar fallos de seguridad ante 
-                //ataque de inyección SQL al menos con parámetros string
-                /*String sql = "DELETE FROM products"
-                        + " WHERE ProductId= " +id;
+                sentencia.executeUpdate();
+                ResultSet rsClaves=sentencia.getGeneratedKeys();
                 
-                Statement sentencia = Conexion.conexion.createStatement();
-                
-                if(sentencia.executeUpdate(sql)>0){
-                    return true;
-                }else{
-                    return false;
-                }*/
-                
-                
-                //Versión parametrizada de la sentencia sql que evita el fallo
-                //de inyección SQL
-                String sql = "DELETE FROM products"
-                        + " WHERE ProductId = ?";
-                PreparedStatement sentencia = Conexion.conexion.prepareStatement(sql);
-                sentencia.setInt(1, id);
-                
-                if(sentencia.executeUpdate()>0){
-                    return true;
-                }else{
-                    return false;
+                if (rsClaves.next()) {
+                    return rsClaves.getInt(1);
+                } else {
+                    return 0;
                 }
                 
             } else {
@@ -66,12 +53,20 @@ public class DAOProducto {
             }
         } catch (SQLException ex) {
             if(ex.getErrorCode()==1451){
-                throw new Exception("No se puede eliminar un producto que tiene historial de ventas");
+                throw new Exception("Error al intentar añadir este producto a una categoría o proveedor que no existen");
             }
             throw new Exception("No se ha podido realizar la operación");
         } finally {
             Conexion.desconectar();
         }
+    }
+
+    public boolean editar(Producto objProducto) {
+        return true;
+    }
+
+    public boolean eliminar(int id) throws Exception{
+       return false;
     }
 
     public ArrayList<Producto> consultarTodos() throws Exception {
