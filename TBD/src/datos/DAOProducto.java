@@ -66,7 +66,48 @@ public class DAOProducto {
     }
 
     public boolean eliminar(int id) throws Exception{
-       return false;
+       try {
+            if (Conexion.conectar()) {
+                
+                //Sentencia concatenada puede causar fallos de seguridad ante 
+                //ataque de inyección SQL al menos con parámetros string
+                /*String sql = "DELETE FROM products"
+                        + " WHERE ProductId= " +id;
+                
+                Statement sentencia = Conexion.conexion.createStatement();
+                
+                if(sentencia.executeUpdate(sql)>0){
+                    return true;
+                }else{
+                    return false;
+                }
+                */
+
+
+                //Versión parametrizada de la sentencia sql que evita el fallo
+                //de inyección SQL
+                String sql = "DELETE FROM products"
+                        + " WHERE ProductId = ?";
+                PreparedStatement sentencia = Conexion.conexion.prepareStatement(sql);
+                sentencia.setInt(1, id);
+                
+                if(sentencia.executeUpdate()>0){
+                    return true;
+                }else{
+                    return false;
+                }
+                
+            } else {
+                throw new Exception("No se ha podido conectar con el servidor");
+            }
+        } catch (SQLException ex) {
+            if(ex.getErrorCode()==1451){
+                throw new Exception("No se puede eliminar un producto que tiene historial de ventas");
+            }
+            throw new Exception("No se ha podido realizar la operación");
+        } finally {
+            Conexion.desconectar();
+        }
     }
 
     public ArrayList<Producto> consultarTodos() throws Exception {

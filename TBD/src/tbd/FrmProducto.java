@@ -16,6 +16,7 @@ import modelos.Categoria;
 import modelos.Producto;
 import modelos.Proveedor;
 import datos.DAOProducto;
+import java.text.DecimalFormat;
 import javax.swing.JOptionPane;
 
 /**
@@ -49,7 +50,7 @@ public class FrmProducto extends javax.swing.JFrame {
             }
             
         } catch (Exception ex) {
-            Logger.getLogger(FrmProducto.class.getName()).log(Level.SEVERE, null, ex);
+            JOptionPane.showMessageDialog(this,ex.getMessage());
         }
     }
     
@@ -57,7 +58,38 @@ public class FrmProducto extends javax.swing.JFrame {
 //        initComponents();
 //        this.frmLista=frmLista;
         this(frmLista);
-        this.idProducto=idProducto;
+        try {
+            this.idProducto=idProducto;
+            DecimalFormat formato=new DecimalFormat("0.00");
+            Producto objProducto=new DAOProducto().consultarUno(idProducto);
+            if(objProducto!=null){
+                txtNombre.setText(objProducto.getNombre());
+                txtCantidadXUnidad.setText(objProducto.getCantidadXUnidad());
+                txtPrecio.setText( formato.format(objProducto.getPrecio()));
+                txtExistencia.setText(objProducto.getExistencia()+"");
+                txtNivelReorden.setText(objProducto.getNivelReorden()+"");
+                txtUnidadesOrden.setText(objProducto.getUnidadesEnOrden()+"");
+                rbtSi.setSelected(objProducto.getDescontinuado()==1);
+                rbtNo.setSelected(objProducto.getDescontinuado()==0);
+                Categoria c=new Categoria();
+                c.setIdCategoria(objProducto.getIdCategoria());
+                cboCategoria.setSelectedItem(c);
+                Proveedor p=new Proveedor();
+                p.setIdProveedor(objProducto.getIdProveedor());
+                cboProveedor.setSelectedItem(p);
+            }else{
+                JOptionPane.showMessageDialog(this,"El producto solicitado no existe");
+                this.setVisible(false);
+                frmLista.actualizarTabla();
+                frmLista.setVisible(true);
+            }
+            
+            
+        } catch (Exception ex) {
+            JOptionPane.showMessageDialog(this,ex.getMessage());
+        }
+        
+        
     }
 
     /**

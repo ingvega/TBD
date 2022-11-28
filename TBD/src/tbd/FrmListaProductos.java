@@ -157,7 +157,16 @@ public class FrmListaProductos extends javax.swing.JFrame {
     }//GEN-LAST:event_btnAgregarActionPerformed
 
     private void btnEditarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEditarActionPerformed
-        // TODO add your handling code here:
+        int fila=tblLista.getSelectedRow();
+        if(fila>=0){
+            int idProducto = Integer.parseInt(tblLista.getValueAt(fila, 0).toString());
+            FrmProducto frm=new FrmProducto(this,idProducto);
+            frm.setVisible(true);
+            this.setVisible(false);
+        }else{
+            JOptionPane.showMessageDialog(this, "Se debe seleccionar el producto a eliminar", 
+                    "Catálogo de productos",JOptionPane.WARNING_MESSAGE);
+        }
     }//GEN-LAST:event_btnEditarActionPerformed
 
     /**
