@@ -272,24 +272,26 @@ public class FrmProducto extends javax.swing.JFrame {
     private void btnAceptarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAceptarActionPerformed
         //Validar los datos
         
+        
+        //Llenar producto
+        //Llenar un producto con todos los datos de la interfaz gráfica
+            Proveedor objProveedor=(Proveedor) cboProveedor.getSelectedItem();
+            Categoria objCategoria=(Categoria) cboCategoria.getSelectedItem();
+
+            Producto objProducto=new Producto(0,
+                    txtNombre.getText().trim(),
+                    objProveedor.getIdProveedor(),
+                    objCategoria.getIdCategoria(),
+                    txtCantidadXUnidad.getText().trim(),
+                    Double.parseDouble(txtPrecio.getText()),
+                    Integer.parseInt(txtExistencia.getText()),
+                    Integer.parseInt(txtNivelReorden.getText()),
+                    Integer.parseInt(txtUnidadesOrden.getText()),
+                    (rbtSi.isSelected())?1:0
+            );
         //Verificar si voy a agregar
         if(idProducto==0){
             try {
-                //Llenar un producto con todos los datos de la interfaz gráfica
-                Proveedor objProveedor=(Proveedor) cboProveedor.getSelectedItem();
-                Categoria objCategoria=(Categoria) cboCategoria.getSelectedItem();
-                
-                Producto objProducto=new Producto(0,
-                        txtNombre.getText().trim(),
-                        objProveedor.getIdProveedor(),
-                        objCategoria.getIdCategoria(),
-                        txtCantidadXUnidad.getText().trim(),
-                        Double.parseDouble(txtPrecio.getText()),
-                        Integer.parseInt(txtExistencia.getText()),
-                        Integer.parseInt(txtNivelReorden.getText()),
-                        Integer.parseInt(txtUnidadesOrden.getText()),
-                        (rbtSi.isSelected())?1:0
-                );
                 int idGenerado=new DAOProducto().agregar(objProducto);
                 if(idGenerado>0){
                     JOptionPane.showMessageDialog(this, "El producto se ha añadido existosamente");
@@ -302,11 +304,23 @@ public class FrmProducto extends javax.swing.JFrame {
             } catch (Exception ex) {
                 JOptionPane.showMessageDialog(this, ex.getMessage());
             }
+        }else{
+            objProducto.setId(idProducto);
+            try {
+                
+                if(new DAOProducto().editar(objProducto)){
+                    JOptionPane.showMessageDialog(this, "El producto se ha editado existosamente");
+                    frmLista.actualizarTabla();
+                    frmLista.setVisible(true);
+                    this.dispose();
+                }else{
+                    JOptionPane.showMessageDialog(this, "Error al tratar de almacenar el producto");
+                }
+            } catch (Exception ex) {
+                JOptionPane.showMessageDialog(this, ex.getMessage());
+            }
         }
-        //Verificar que se guarde y despues a actualizar el formulario
-        frmLista.setVisible(true);
-        //Solo si guardó se actualiza
-        frmLista.actualizarTabla();
+        
     }//GEN-LAST:event_btnAceptarActionPerformed
 
 

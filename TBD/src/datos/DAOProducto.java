@@ -6,6 +6,7 @@
 package datos;
 
 import com.mysql.cj.exceptions.MysqlErrorNumbers;
+import java.sql.CallableStatement;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -61,8 +62,35 @@ public class DAOProducto {
         }
     }
 
-    public boolean editar(Producto objProducto) {
-        return true;
+    public boolean editar(Producto objProducto) throws Exception {
+        try {
+            if (Conexion.conectar()) {
+                String sql = "{ call paProductoActualizar(?,?,?,?,?,?,?,?,?,?)}";
+                CallableStatement sentencia = Conexion.conexion.prepareCall(sql);
+                sentencia.setInt(1, objProducto.getId());
+                sentencia.setString(2, objProducto.getNombre());
+                sentencia.setInt(3, objProducto.getIdProveedor());
+                sentencia.setInt(4, objProducto.getIdCategoria());
+                sentencia.setString(5, objProducto.getCantidadXUnidad());
+                sentencia.setDouble(6, objProducto.getPrecio());
+                sentencia.setInt(7, objProducto.getExistencia());
+                sentencia.setInt(8, objProducto.getNivelReorden());
+                sentencia.setInt(9, objProducto.getUnidadesEnOrden());
+                sentencia.setInt(10, objProducto.getDescontinuado());
+                
+                int filasAfectadas=sentencia.executeUpdate();
+                return filasAfectadas>0;                
+            } else {
+                throw new Exception("No se ha podido conectar con el servidor");
+            }
+        } catch (SQLException ex) {
+            if(ex.getErrorCode()==1451){
+                throw new Exception("Error al intentar añadir este producto a una categoría o proveedor que no existen");
+            }
+            throw new Exception("No se ha podido realizar la operación");
+        } finally {
+            Conexion.desconectar();
+        }
     }
 
     public boolean eliminar(int id) throws Exception{
